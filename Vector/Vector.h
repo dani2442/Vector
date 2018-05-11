@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-template<typename T>
+template<class T>
 class Vector
 {
 public:
@@ -24,6 +24,10 @@ public:
 		this->v = v;
 		return *this;
 	}
+
+	template<class T> friend T operator*(const Vector<T>& lhs, const Vector<T>& rhs);
+	template<class T> friend Vector<T> operator*(const T scalar);  // vector*scalar   
+	template<class T> friend Vector<T> operator*(const T scalar, const Vector<T>& rhs);
 	//const Vector<T> &operator+(int x)const {return *this;}
 	//Vector<T> operator-(const Vector<T> &a, const Vector<T> &b);
 	//Vector<T> operator+(const Vector<T> &a, const Vector<T> &b);
@@ -34,10 +38,51 @@ private:
 
 };
 
+template<class T>
+T operator*(const Vector<T>& lhs, const Vector<T>& rhs)  // inner product
+{
+	assert(lhs.base.size() == rhs.base.size());
+
+	Vector<T> result;
+	result.base.reserve(lhs.base.size());
+	std::transform(lhs.base.begin(), lhs.base.end(), rhs.base.begin(), std::back_inserter(result.base), std::multiplies<T>());
+
+	return result;
+}
+
+template<class T>
+Vector<T> operator*(const Vector<T>& lhs, const T scalar)  // vector*scalar
+{
+	return scalar * lhs;
+}
+
+template<class T>
+Vector<T> operator*(const T scalar, const Vector<T>& rhs)  // scalar*vector
+{
+	Vector<T> result;
+	result.base.reserve(rhs.base.size());
+
+	std::transform(rhs.base.begin(), rhs.base.end(), std::back_inserter(result.base), std::bind1st(std::multiplies<T>(), scalar));
+
+	return result;
+}
 
 
+/*
+template<typename T1,typename T2,typename T3 = decltype(std::declval<T1>() * std::declval<T2>())>
+vector<T1> operator*( Vector<vector<T1>> a,  T2& b)
+{
+
+	for (typename Vector<T1>::iterator it1 = a.v.begin(); it1 != a.v.end(); it1++) {
+		for (typename T1::iterator it2 = (*it1).begin(); it2 != (*it1).end(); it2++) {
+			(*it2) *= b;
+		}
+	}
+	return a;
+}
+*/
 template<typename T>
-Vector<T> operator-(const Vector<T> &a, const Vector<T> &b)
+vector<T> operator-( Vector<T> &a,  Vector<T> &b)
 {
 	vector<int>N1(2), N2(2);
 	if (!(a.Check_Size(N1) && b.Check_Size(N2)))

@@ -6,9 +6,9 @@ int main() {
 	Vector<vector<double>> v2; v2.v = { { 3,2 },{ 2,3 },{3,4} };
 	Vector<vector<double>> v3;
 	Vector<vector<double>> v4;
-	Vector<int> dani;
+	Vector<int> dani; dani.v = { 3,4,5,6 };
 	
-	v3=v1+v2;
+	dani=dani*3;
 	v1.Check_Size();
 	v1.Print();
 	v1.Transponse();
