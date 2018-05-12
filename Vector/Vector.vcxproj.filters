@@ -18,14 +18,8 @@
     <ClInclude Include="Vector.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Matriz.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vector.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
