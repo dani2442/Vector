@@ -1,6 +1,6 @@
 # Vector  -  template operator overloading
 
-This library includes all necessary methods to opperate with two dimensional matrix
+This library includes all necessary methods to opperate with two dimensional matrix.
 
 ## Getting Started
 
@@ -31,6 +31,9 @@ if you have performance ideas, do not be afraid, post some ideas
 ## Versioning
 
 // 
+//
+//
+//
 
 ## Authors
 
@@ -42,5 +45,3 @@ See also the list of [contributors](https://github.com/your/project/contributors
 ## License
 
 free license
-
-## Acknowledgments
