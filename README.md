@@ -34,8 +34,8 @@ if you have performance ideas, do not be afraid, post some ideas
 
 ## Authors
 
-* **Daniel López Montero** - *Initial work* - [PurpleBooth](https://github.com/dani2442)
-* **Javier López Segura** - *Initial work* - [PurpleBooth](https://github.com/jlopez2022)
+* **Daniel López Montero** - *Initial work* - [dani2442](https://github.com/dani2442)
+* **Javier López Segura** - *Initial work* - [jlopez2022](https://github.com/jlopez2022)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
