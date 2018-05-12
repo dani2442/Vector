@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <iostream>
-using namespace std;
 
 template<class T>
 class Vector
@@ -13,11 +12,11 @@ public:
 
 	~Vector();
 
-	vector<vector<T>> v;
+	std::vector<std::vector<T>> v;
 	
 	bool Check_Size() ;
-	template<typename T1> bool Check_Size(vector<T1>&) ;
-	template<typename T1> bool Check_Size_Fast(vector<T1>&);
+	template<typename T1> bool Check_Size(std::vector<T1>&) ;
+	template<typename T1> bool Check_Size_Fast(std::vector<T1>&);
 
 	void Print();
 
@@ -28,40 +27,40 @@ public:
 
 
 	template<class T,class Q>
-	friend vector<vector<T>> operator* (const Q , Vector<T> );
+	friend std::vector<std::vector<T>> operator* (const Q , Vector<T> );
 	template<class T,class Q>
-	friend vector<vector<T>> operator* (Vector<T> , const Q );
+	friend std::vector<std::vector<T>> operator* (Vector<T> , const Q );
 	template<class T>
-	friend vector<vector<T>> operator*(Vector<T>& , Vector<T>&);
+	friend std::vector<std::vector<T>> operator*(Vector<T>& , Vector<T>&);
 	template<typename T>
-	friend vector<vector<T>> operator+(Vector<T> &, Vector<T> &);
+	friend std::vector<std::vector<T>> operator+(Vector<T> &, Vector<T> &);
 	template<typename T>
-	friend vector<vector<T>> operator-(Vector<T> &, Vector<T> &);
+	friend std::vector<std::vector<T>> operator-(Vector<T> &, Vector<T> &);
 
 	
 
-	Vector<T>& operator = (const vector<vector<T>>& v)
+	Vector<T>& operator = (const std::vector<std::vector<T>>& v)
 	{
 		this->v = v;
 		return *this;
 	}
 
-	vector<vector<T>>& operator +=( Vector<T>&v) {
+	std::vector<std::vector<T>>& operator +=( Vector<T>&v) {
 		return v + (*this);
 	}
 
-	vector<vector<T>>& operator -=(Vector<T>&v) {
+	std::vector<std::vector<T>>& operator -=(Vector<T>&v) {
 		return v - (*this);
 	}
 
-	vector<vector<T>>& operator *=(Vector<T>&v) {
+	std::vector<std::vector<T>>& operator *=(Vector<T>&v) {
 		return v * (*this);
 	}
 	
 
 private:
 
-	void Recursive_Check(vector<T>&);
+	void Recursive_Check(std::vector<T>&);
 
 };
 
@@ -73,13 +72,13 @@ Vector<T>::Vector(){
 
 template<class T>
 inline Vector<T>::Vector(int size):
-	v(size,vector<T>(size))
+	v(size,std::vector<T>(size))
 {
 }
 
 template<class T>
 inline Vector<T>::Vector(int size_x, int size_y):
-	v(size_x,vector<T>(size_y))
+	v(size_x,std::vector<T>(size_y))
 {
 }
 
@@ -89,10 +88,10 @@ Vector<T>::~Vector() {
 
 
 template <class T, class Q>
-vector<vector<T>> operator* (const Q c, Vector<T> v1)
+std::vector<std::vector<T>> operator* (const Q c, Vector<T> v1)
 {
-	for (vector<vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
-		for (vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
+	for (std::vector<std::vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
+		for (std::vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
 			*it2 *= c;
 		}
 	}
@@ -100,10 +99,10 @@ vector<vector<T>> operator* (const Q c, Vector<T> v1)
 }
 
 template <class T, class Q>
-vector<vector<T>> operator* ( Vector<T> v1,const Q c)
+std::vector<std::vector<T>> operator* ( Vector<T> v1,const Q c)
 {
-	for (vector<vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
-		for (vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
+	for (std::vector<std::vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
+		for (std::vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
 			*it2 *= c;
 		}
 	}
@@ -111,21 +110,21 @@ vector<vector<T>> operator* ( Vector<T> v1,const Q c)
 }
 
 template<class T>
-vector<vector<T>> operator*( Vector<T>& vector1, Vector<T>&vector2) {
-	vector<int>N1(2), N2(2);
-	vector1.Check_Size_Fast(N1);
-	vector2.Check_Size_Fast(N2);
+std::vector<std::vector<T>> operator*( Vector<T>& v1, Vector<T>&v2) {
+	std::vector<int>N1(2), N2(2);
+	v1.Check_Size_Fast(N1);
+	v2.Check_Size_Fast(N2);
 
 	if(N1[1]!=N2[0])
 		return {};
 
-	vector<vector<T>> Result(N1[0], vector<T>(N2[1]));
+	std::vector<std::vector<T>> Result(N1[0], std::vector<T>(N2[1]));
 	int i = 0;
-	for (typename vector<vector<T>>::iterator it1 = Result.begin(); it1 != Result.end(); it1++, i++) {
+	for (typename std::vector<std::vector<T>>::iterator it1 = Result.begin(); it1 != Result.end(); it1++, i++) {
 		int j = 0;
-		for (typename vector<T>::iterator it2 = (*it1).begin(); it2 != (*it1).end(); it2++, j++) {
+		for (typename std::vector<T>::iterator it2 = (*it1).begin(); it2 != (*it1).end(); it2++, j++) {
 			for (int k = 0; k < N1[1]; k++) {
-				*it2 += vector1.v[i][k] * vector2.v[k][j];
+				*it2 += v1.v[i][k] * v2.v[k][j];
 			}
 		}
 	}
@@ -133,15 +132,15 @@ vector<vector<T>> operator*( Vector<T>& vector1, Vector<T>&vector2) {
 }
 
 template<typename T>
-vector<vector<T>> operator+(Vector<T> &a, Vector<T> &b)
+std::vector<std::vector<T>> operator+(Vector<T> &a, Vector<T> &b)
 {
-	vector<int>N1(2), N2(2);
+	std::vector<int>N1(2), N2(2);
 	if (!(a.Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
 		return {};
 
 	if ((N1[0] != N2[0]) || (N1[1] != N2[1]))
 		return {};
-	vector<vector<T>>Result(N1[0], vector<T>(N1[1]));
+	std::vector<std::vector<T>>Result(N1[0], std::vector<T>(N1[1]));
 	for (int i = 0; i < N1[0]; i++) {
 		for (int j = 0; j < N1[1]; j++) {
 			Result[i][j] = a.v[i][j] + b.v[i][j];
@@ -153,15 +152,15 @@ vector<vector<T>> operator+(Vector<T> &a, Vector<T> &b)
 
 
 template<typename T>
-vector<vector<T>> operator-(Vector<T> &a, Vector<T> &b)
+std::vector<std::vector<T>> operator-(Vector<T> &a, Vector<T> &b)
 {
-	vector<int>N1(2), N2(2);
+	std::vector<int>N1(2), N2(2);
 	if (!(a.Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
 		return {};
 
 	if ((N1[0] != N2[0]) || (N1[1] != N2[1]))
 		return {};
-	vector<vector<T>>Result(N1[0], vector<T>(N1[1]));
+	std::vector<std::vector<T>>Result(N1[0], std::vector<T>(N1[1]));
 	for (int i = 0; i < N1[0]; i++) {
 		for (int j = 0; j < N1[1]; j++) {
 			Result[i][j] = a.v[i][j] - b.v[i][j];
@@ -172,22 +171,22 @@ vector<vector<T>> operator-(Vector<T> &a, Vector<T> &b)
 
 
 template<typename T>
-void Vector<T>::Recursive_Check(vector<T>& v1) {
+void Vector<T>::Recursive_Check(std::vector<T>& v1) {
 
 }
 template<typename T>
 bool Vector<T>::Check_Size()
 {
-	if (is_fundamental<T>::value) {
+	if (std::is_fundamental<T>::value) {
 		return true;
 	}
 	else {
 		size_t size_y = 0;
-		for (typename vector<vector<T>>::iterator it = this->v.begin(); it != this->v.end(); ++it) {
+		for (typename std::vector<std::vector<T>>::iterator it = this->v.begin(); it != this->v.end(); ++it) {
 			if (size_y != 0) {
 				if (size_y != it->size())
 				{
-					cout << "matriz invalida" << endl;
+					std::cout << "matriz invalida" << std::endl;
 					return false;
 				}
 			}
@@ -199,7 +198,7 @@ bool Vector<T>::Check_Size()
 }
 template<typename T>
 template<typename T1>
-bool Vector<T>::Check_Size_Fast(vector<T1>&mysize)
+bool Vector<T>::Check_Size_Fast(std::vector<T1>&mysize)
 {
 	mysize[0] = this->v.size();
 	mysize[1] =this->v[0].size();
@@ -209,10 +208,10 @@ bool Vector<T>::Check_Size_Fast(vector<T1>&mysize)
 
 template<typename T>
 template<typename T1>
-bool Vector<T>::Check_Size(vector<T1>&mysize)
+bool Vector<T>::Check_Size(std::vector<T1>&mysize)
 {
-	if (!is_fundamental<T1>::value) {
-		cout << "error parametro dimension";
+	if (!std::is_fundamental<T1>::value) {
+		std::cout << "error parametro dimension";
 		return false;
 	}
 
@@ -223,7 +222,7 @@ bool Vector<T>::Check_Size(vector<T1>&mysize)
 		if (size_y != 0) {
 			if (size_y != this->v[i].size())
 			{
-				cout << "matriz invalida" << endl;
+				std::cout << "matriz invalida" << std::endl;
 				return false;
 			}
 		}
@@ -244,32 +243,32 @@ void Vector<T>::Print()
 	if (!this->Check_Size())
 		return;
 
-	for (typename vector<vector<T>>::iterator it1 = this->v.begin(); it1 != this->v.end(); it1++) {
-		for (typename vector<T>::iterator it2 = it1->begin(); it2 != it1->end(); it2++) {
-			cout << *it2 << " ";
+	for (typename std::vector<std::vector<T>>::iterator it1 = this->v.begin(); it1 != this->v.end(); it1++) {
+		for (typename std::vector<T>::iterator it2 = it1->begin(); it2 != it1->end(); it2++) {
+			std::cout << *it2 << " ";
 		}
-		cout << endl;
+		std::cout << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 
 }
 
 template<typename T>
 inline void Vector<T>::Transponse()
 {
-	vector<int> mysize(2);
+	std::vector<int> mysize(2);
 	if (!this->Check_Size_Fast(mysize)) {
 		return;
 	}
-	vector<vector<T>> myvector2(mysize[1], vector<T>(mysize[0]));
+	std::vector<std::vector<T>>v2(mysize[1], std::vector<T>(mysize[0]));
 	int i = 0;
-	for (typename vector<vector<T>>::iterator it1 = this->v.begin(); it1 != this->v.end(); ++it1, i++) {
+	for (typename std::vector<std::vector<T>>::iterator it1 = this->v.begin(); it1 != this->v.end(); ++it1, i++) {
 		int j = 0;
-		for (typename vector<T>::iterator it2 = it1->begin(); it2 != it1->end(); ++it2, j++) {
-			myvector2[j][i] = *it2;
+		for (typename std::vector<T>::iterator it2 = it1->begin(); it2 != it1->end(); ++it2, j++) {
+			v2[j][i] = *it2;
 		}
 	}
-	this->v = myvector2;
+	this->v = v2;
 	return;
 }
 
@@ -278,13 +277,13 @@ inline void Vector<T>::Inverse()
 {
 	if (this->v.size() != this->v[0].size())
 	{
-		cout << "ERROR on inverse() not square array" << endl; getchar(); return;//returns a null
+		std::cout << "ERROR on inverse() not square array" << std::endl; getchar(); return;//returns a null
 	}
 
 	size_t dim = this->v.size();
 	int i, j, ord;
-	vector< vector<T> > x(dim, vector<T>(dim)), y(dim, vector<T>(dim));//output
-	x = this->v;																			  //init_2Dvector(x, dim, dim); x = x2;																			  //init_2Dvector(y, dim, dim);
+	std::vector< std::vector<T> > x(dim, std::vector<T>(dim)), y(dim, std::vector<T>(dim));//output
+	x = this->v;																			  //init_2Dstd::vector(x, dim, dim); x = x2;																			  //init_2Dstd::vector(y, dim, dim);
 																					  //1. Unity array y: 
 	for (i = 0; i<dim; i++)
 		for (j = 0; j<dim; j++)
