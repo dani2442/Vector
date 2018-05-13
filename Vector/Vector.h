@@ -332,16 +332,12 @@ inline void Vector<T>::Inverse()
 			B[i][k] /= this->v[i][i];
 		}
 
-		// this is not necessary, but the output looks nicer:
-		this->v[i][i] = 1;
 
 		for (int rowModify = i - 1; rowModify >= 0; rowModify--) {
 			for (int columModify = 0; columModify<n; columModify++) {
 				B[rowModify][columModify] -= B[i][columModify]
 					* this->v[rowModify][i];
 			}
-			// this is not necessary, but the output looks nicer:
-			this->v[rowModify][i] = 0;
 		}
 	}
 	this->v = B;
