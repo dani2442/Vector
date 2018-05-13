@@ -23,9 +23,10 @@ public:
 
 	void Transponse();
 
+	T Determinant();
+
 	void Inverse();
 	void Inverse2();
-	void Inverse3();
 
 
 	template<class T,class Q>
@@ -272,6 +273,13 @@ inline void Vector<T>::Transponse()
 	}
 	this->v = v2;
 	return;
+}
+
+template<class T>
+inline T Vector<T>::Determinant()
+{
+
+	return T();
 }
 
 
