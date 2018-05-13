@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <iostream>
 
@@ -23,7 +24,6 @@ public:
 	void Transponse();
 
 	void Inverse();
-
 
 
 	template<class T,class Q>
@@ -272,70 +272,77 @@ inline void Vector<T>::Transponse()
 	return;
 }
 
-template<typename T>
+
+
+template<class T>
 inline void Vector<T>::Inverse()
 {
-	if (this->v.size() != this->v[0].size())
-	{
-		std::cout << "ERROR on inverse() not square array" << std::endl; getchar(); return;//returns a null
+	int n = this->v.size();
+	std::vector< std::vector<T> > B(n, std::vector<T>(n,0));
+
+	for (int i = 0; i<n; i++) {
+		B[i][i] = 1;
 	}
 
-	size_t dim = this->v.size();
-	int i, j, ord;
-	std::vector< std::vector<T> > x(dim, std::vector<T>(dim)), y(dim, std::vector<T>(dim));//output
-	x = this->v;																			  //init_2Dstd::vector(x, dim, dim); x = x2;																			  //init_2Dstd::vector(y, dim, dim);
-																					  //1. Unity array y: 
-	for (i = 0; i<dim; i++)
-		for (j = 0; j<dim; j++)
-		{
-			if (i == j)
-				y[i][j] = 1.0;
-			else
-				y[i][j] = 0.0;
-		}
-
-	double diagon, coef;
-	double *ptrx, *ptry, *ptrx2, *ptry2;
-	for (ord = 0; ord<dim; ord++)
-	{
-		//2 Hacemos diagonal de x =1
-		diagon = x[ord][ord];
-		if (fabs(diagon)<1e-15)
-		{
-			long i2;
-			for (i2 = ord + 1; i2<dim; i2++)
-			{
-				if (fabs(x[ord][i2])>1e-15) break;
-			}
-			if (i2 >= dim)
-				return;//error, returns null
-			for (i = 0; i<dim; i++)//sumo la linea que no es 0 el de la misma fila de ord
-			{
-				x[ord + i][ord] += x[ord + i][i2];
+	for (int i = 0; i<n; i++) {
+		// Search for maximum in this column
+		T maxEl = abs(this->v[i][i]);
+		int maxRow = i;
+		for (int k = i + 1; k<n; k++) {
+			if (abs(this->v[k][i]) > maxEl) {
+				maxEl = this->v[k][i];
+				maxRow = k;
 			}
 		}
-		ptry = &y[ord][0];
-		for (i = 0; i<dim; i++)
-			*ptry++ /= diagon;
-		ptrx = &x[ord][ord];
-		for (i = ord; i<dim; i++)//para i<ord *ptrx=0,
-			*ptrx++ /= diagon;
 
-		//Hacemos '0' la columna ord salvo elemento diagonal:
-		for (i = 0; i<dim; i++)//Empezamos por primera fila
-		{
-			if (i == ord) continue;
-			coef = x[i][ord];//elemento ha hacer 0 
-			if (fabs(coef)<1e-15) continue; //si es cero se evita
-			ptry = &y[i][0];
-			ptry2 = &y[ord][0];
-			for (j = 0; j<dim; j++)
-				*ptry++ = *ptry - coef * (*ptry2++);
-			ptrx = &x[i][ord];
-			ptrx2 = &x[ord][ord];
-			for (j = ord; j<dim; j++)
-				*ptrx++ = *ptrx - coef * (*ptrx2++);
+		// Swap maximum row with current row (column by column)
+		for (int k = i; k<n; k++) {
+			double tmp = this->v[maxRow][k];
+			this->v[maxRow][k] = this->v[i][k];
+			this->v[i][k] = tmp;
 		}
-	}//end ord
-	this->v = y;
+		for (int k = 0; k<n; k++) {
+			double tmp = B[maxRow][k];
+			B[maxRow][k] = B[i][k];
+			B[i][k] = tmp;
+		}
+
+		// Make all rows below this one 0 in current column
+		for (int k = i + 1; k<n; k++) {
+			T c = -this->v[k][i] / this->v[i][i];
+			for (int j = i; j<n; j++) {
+				if (i == j) {
+					this->v[k][j] = 0;
+				}
+				else {
+					this->v[k][j] += c * this->v[i][j];
+				}
+			}
+			for (int j = 0; j< n; j++) {
+				B[k][j] += c * B[i][j];
+			}
+		}
+	}
+
+
+
+	// Solve equation Ax=b for an upper triangular matrix A
+	for (int i = n - 1; i >= 0; i--) {
+		for (int k = 0; k<n; k++) {
+			B[i][k] /= this->v[i][i];
+		}
+
+		// this is not necessary, but the output looks nicer:
+		this->v[i][i] = 1;
+
+		for (int rowModify = i - 1; rowModify >= 0; rowModify--) {
+			for (int columModify = 0; columModify<n; columModify++) {
+				B[rowModify][columModify] -= B[i][columModify]
+					* this->v[rowModify][i];
+			}
+			// this is not necessary, but the output looks nicer:
+			this->v[rowModify][i] = 0;
+		}
+	}
+	this->v = B;
 }
