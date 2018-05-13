@@ -93,8 +93,8 @@ Vector<T>::~Vector() {
 template <class T, class Q>
 std::vector<std::vector<T>> operator* (const Q c, Vector<T> v1)
 {
-	for (std::vector<std::vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
-		for (std::vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
+	for (typename std::vector<std::vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
+		for (typename std::vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
 			*it2 *= c;
 		}
 	}
@@ -104,8 +104,8 @@ std::vector<std::vector<T>> operator* (const Q c, Vector<T> v1)
 template <class T, class Q>
 std::vector<std::vector<T>> operator* ( Vector<T> v1,const Q c)
 {
-	for (std::vector<std::vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
-		for (std::vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
+	for (typename std::vector<std::vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
+		for (typename std::vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
 			*it2 *= c;
 		}
 	}
