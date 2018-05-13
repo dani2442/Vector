@@ -24,6 +24,8 @@ public:
 	void Transponse();
 
 	void Inverse();
+	void Inverse2();
+	void Inverse3();
 
 
 	template<class T,class Q>
@@ -341,4 +343,75 @@ inline void Vector<T>::Inverse()
 		}
 	}
 	this->v = B;
+}
+
+
+
+template<class T>
+inline void Vector<T>::Inverse2()
+{
+	if (this->v.size() != this->v[0].size())
+	{
+		std::cout << "ERROR on inverse() not square array" << std::endl; getchar(); return;//returns a null
+	}
+
+	size_t dim = this->v.size();
+	int i, j, ord;
+	std::vector< std::vector<T> > y(dim, std::vector<T>(dim));
+	for (i = 0; i < dim; i++)
+	{
+		y[i][i] = 1.0;
+		for (j = i + 1; j < dim; j++)
+		{
+			y[i][j] = y[j][i] = 0.0;
+		}
+	}
+
+	double diagon, coef;
+	double *ptrx, *ptry, *ptrx2, *ptry2;
+	for (ord = 0; ord<dim; ord++)
+	{
+		//2 Hacemos diagonal de x =1
+		int i2;
+		if (fabs(this->v[ord][ord])<1e-15)
+		{
+			for (i2 = ord + 1; i2<dim; i2++)
+			{
+				if (fabs(this->v[i2][ord])>1e-15) break;
+			}
+			if (i2 >= dim)
+				return;//error, returns null
+			for (i = 0; i<dim; i++)//sumo la linea que no es 0 el de la misma fila de ord
+			{
+				this->v[ord][i] += this->v[i2][i];
+				y[ord][i] += y[i2][i];
+			}
+		}
+		diagon = 1.0 / this->v[ord][ord];
+		ptry = &y[ord][0];
+		ptrx = &this->v[ord][0];
+		for (i = 0; i < dim; i++)
+		{
+			*ptry++ *= diagon;
+			*ptrx++ *= diagon;
+		}
+
+		//Hacemos '0' la columna ord salvo elemento diagonal:
+		for (i = 0; i<dim; i++)//Empezamos por primera fila
+		{
+			if (i == ord) continue;
+			coef = this->v[i][ord];//elemento ha hacer 0 
+			if (fabs(coef)<1e-15) continue; //si es cero se evita
+			ptry = &y[i][0];
+			ptry2 = &y[ord][0];
+			ptrx = &this->v[i][0];
+			ptrx2 = &this->v[ord][0];
+			for (j = 0; j < dim; j++)
+			{
+				*ptry++ = *ptry - coef * (*ptry2++);
+				*ptrx++ = *ptrx - coef * (*ptrx2++);
+			}
+		}
+	}//end ord
+	this->v = y;
 }
