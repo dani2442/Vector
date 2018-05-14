@@ -14,9 +14,9 @@ public:
 	~Vector();
 
 	std::vector<std::vector<T>> v;
-	
-	bool Check_Size() ;
-	template<typename T1> bool Check_Size(std::vector<T1>&) ;
+
+	bool Check_Size();
+	template<typename T1> bool Check_Size(std::vector<T1>&);
 	template<typename T1> bool Check_Size_Fast(std::vector<T1>&);
 
 	void Print();
@@ -29,18 +29,18 @@ public:
 	void Inverse2();
 
 
-	template<class T,class Q>
-	friend std::vector<std::vector<T>> operator* (const Q , Vector<T> );
-	template<class T,class Q>
-	friend std::vector<std::vector<T>> operator* (Vector<T> , const Q );
+	template<class T, class Q>
+	friend std::vector<std::vector<T>> operator* (const Q, Vector<T>);
+	template<class T, class Q>
+	friend std::vector<std::vector<T>> operator* (Vector<T>, const Q);
 	template<class T>
-	friend std::vector<std::vector<T>> operator*(Vector<T>& , Vector<T>&);
+	friend Vector<T> operator*(Vector<T>&, Vector<T>&);
 	template<typename T>
-	friend std::vector<std::vector<T>> operator+(Vector<T> &, Vector<T> &);
+	friend Vector<T>& operator+(Vector<T> &, Vector<T> &);
 	template<typename T>
-	friend std::vector<std::vector<T>> operator-(Vector<T> &, Vector<T> &);
+	friend Vector<T>& operator-(Vector<T> &, Vector<T> &);
 
-	
+
 
 	Vector<T>& operator = (const std::vector<std::vector<T>>& v)
 	{
@@ -48,18 +48,58 @@ public:
 		return *this;
 	}
 
-	std::vector<std::vector<T>>& operator +=( Vector<T>&v) {
-		return v + (*this);
+	Vector<T>& operator +=(Vector<T>&b) {
+		std::vector<int>N1(2), N2(2);
+		if (!(this->Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
+			return *this;
+
+		if ((N1[0] != N2[0]) || (N1[1] != N2[1]))
+			return *this;
+		for (int i = 0; i < N1[0]; i++) {
+			for (int j = 0; j < N1[1]; j++) {
+				this->v[i][j] += b.v[i][j];
+			}
+		}
+		return *this;
 	}
 
-	std::vector<std::vector<T>>& operator -=(Vector<T>&v) {
-		return v - (*this);
+	Vector<T>& operator -=(Vector<T>&b) {
+		std::vector<int>N1(2), N2(2);
+		if (!(this->Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
+			return *this;
+
+		if ((N1[0] != N2[0]) || (N1[1] != N2[1]))
+			return *this;
+		for (int i = 0; i < N1[0]; i++) {
+			for (int j = 0; j < N1[1]; j++) {
+				this->v[i][j] -= b.v[i][j];
+			}
+		}
+		return *this;
 	}
 
-	std::vector<std::vector<T>>& operator *=(Vector<T>&v) {
-		return v * (*this);
+	Vector<T>& operator *=(Vector<T>&v) {
+		std::vector<int>N1(2), N2(2);
+		this->Check_Size_Fast(N1);
+		v.Check_Size_Fast(N2);
+
+		if (N1[1] != N2[0])
+			return *this;
+
+		std::vector<std::vector<T>> Result(N1[0], std::vector<T>(N2[1]));
+		int i = 0;
+		for (typename std::vector<std::vector<T>>::iterator it1 = Result.begin(); it1 != Result.end(); it1++, i++) {
+			int j = 0;
+			for (typename std::vector<T>::iterator it2 = (*it1).begin(); it2 != (*it1).end(); it2++, j++) {
+				for (int k = 0; k < N1[1]; k++) {
+					*it2 += this->v[i][k] * v.v[k][j];
+				}
+			}
+		}
+		this->v = Result;
+		return *this;
 	}
-	
+
 
 private:
 
@@ -70,18 +110,18 @@ private:
 
 
 template <typename T>
-Vector<T>::Vector(){
+Vector<T>::Vector() {
 }
 
 template<class T>
-inline Vector<T>::Vector(int size):
-	v(size,std::vector<T>(size))
+inline Vector<T>::Vector(int size) :
+	v(size, std::vector<T>(size))
 {
 }
 
 template<class T>
-inline Vector<T>::Vector(int size_x, int size_y):
-	v(size_x,std::vector<T>(size_y))
+inline Vector<T>::Vector(int size_x, int size_y) :
+	v(size_x, std::vector<T>(size_y))
 {
 }
 
@@ -102,7 +142,7 @@ std::vector<std::vector<T>> operator* (const Q c, Vector<T> v1)
 }
 
 template <class T, class Q>
-std::vector<std::vector<T>> operator* ( Vector<T> v1,const Q c)
+std::vector<std::vector<T>> operator* (Vector<T> v1, const Q c)
 {
 	for (typename std::vector<std::vector<T>>::iterator it = v1.v.begin(); it != v1.v.end(); it++) {
 		for (typename std::vector<T>::iterator it2 = it->begin(); it2 != it->end(); it2++) {
@@ -113,63 +153,24 @@ std::vector<std::vector<T>> operator* ( Vector<T> v1,const Q c)
 }
 
 template<class T>
-std::vector<std::vector<T>> operator*( Vector<T>& v1, Vector<T>&v2) {
-	std::vector<int>N1(2), N2(2);
-	v1.Check_Size_Fast(N1);
-	v2.Check_Size_Fast(N2);
-
-	if(N1[1]!=N2[0])
-		return {};
-
-	std::vector<std::vector<T>> Result(N1[0], std::vector<T>(N2[1]));
-	int i = 0;
-	for (typename std::vector<std::vector<T>>::iterator it1 = Result.begin(); it1 != Result.end(); it1++, i++) {
-		int j = 0;
-		for (typename std::vector<T>::iterator it2 = (*it1).begin(); it2 != (*it1).end(); it2++, j++) {
-			for (int k = 0; k < N1[1]; k++) {
-				*it2 += v1.v[i][k] * v2.v[k][j];
-			}
-		}
-	}
-	return Result;
+Vector<T> operator*(Vector<T>& v1, Vector<T>&v2) {
+	v1*=v2;
+	return v1;
 }
 
 template<typename T>
-std::vector<std::vector<T>> operator+(Vector<T> &a, Vector<T> &b)
+Vector<T>& operator+(Vector<T> &a, Vector<T> &b)
 {
-	std::vector<int>N1(2), N2(2);
-	if (!(a.Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
-		return {};
-
-	if ((N1[0] != N2[0]) || (N1[1] != N2[1]))
-		return {};
-	std::vector<std::vector<T>>Result(N1[0], std::vector<T>(N1[1]));
-	for (int i = 0; i < N1[0]; i++) {
-		for (int j = 0; j < N1[1]; j++) {
-			Result[i][j] = a.v[i][j] + b.v[i][j];
-		}
-	}
-	return Result;
-
+	a += b;
+	return a;
 }
 
 
 template<typename T>
-std::vector<std::vector<T>> operator-(Vector<T> &a, Vector<T> &b)
+Vector<T>& operator-(Vector<T> &a, Vector<T> &b)
 {
-	std::vector<int>N1(2), N2(2);
-	if (!(a.Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
-		return {};
-
-	if ((N1[0] != N2[0]) || (N1[1] != N2[1]))
-		return {};
-	std::vector<std::vector<T>>Result(N1[0], std::vector<T>(N1[1]));
-	for (int i = 0; i < N1[0]; i++) {
-		for (int j = 0; j < N1[1]; j++) {
-			Result[i][j] = a.v[i][j] - b.v[i][j];
-		}
-	}
-	return Result;
+	a -= b;
+	return a;
 }
 
 
@@ -204,7 +205,7 @@ template<typename T1>
 bool Vector<T>::Check_Size_Fast(std::vector<T1>&mysize)
 {
 	mysize[0] = this->v.size();
-	mysize[1] =this->v[0].size();
+	mysize[1] = this->v[0].size();
 	return true;
 }
 
@@ -288,7 +289,7 @@ template<class T>
 inline void Vector<T>::Inverse()
 {
 	int n = this->v.size();
-	std::vector< std::vector<T> > B(n, std::vector<T>(n,0));
+	std::vector< std::vector<T> > B(n, std::vector<T>(n, 0));
 
 	for (int i = 0; i<n; i++) {
 		B[i][i] = 1;
