@@ -49,7 +49,7 @@ public:
 	}
 
 	Vector<T>& operator +=(Vector<T>&b) {
-		std::vector<int>N1(2), N2(2);
+		std::vector<size_t>N1(2), N2(2);
 		if (!(this->Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
 			return *this;
 
@@ -64,7 +64,7 @@ public:
 	}
 
 	Vector<T>& operator -=(Vector<T>&b) {
-		std::vector<int>N1(2), N2(2);
+		std::vector<size_t>N1(2), N2(2);
 		if (!(this->Check_Size_Fast(N1) && b.Check_Size_Fast(N2)))
 			return *this;
 
@@ -79,7 +79,7 @@ public:
 	}
 
 	Vector<T>& operator *=(Vector<T>&v) {
-		std::vector<int>N1(2), N2(2);
+		std::vector<size_t>N1(2), N2(2);
 		this->Check_Size_Fast(N1);
 		v.Check_Size_Fast(N2);
 
@@ -260,7 +260,7 @@ void Vector<T>::Print()
 template<typename T>
 inline void Vector<T>::Transponse()
 {
-	std::vector<int> mysize(2);
+	std::vector<size_t> mysize(2);
 	if (!this->Check_Size_Fast(mysize)) {
 		return;
 	}
@@ -288,7 +288,7 @@ inline T Vector<T>::Determinant()
 template<class T>
 inline void Vector<T>::Inverse()
 {
-	int n = this->v.size();
+	size_t n = this->v.size();
 	std::vector< std::vector<T> > B(n, std::vector<T>(n, 0));
 
 	for (int i = 0; i<n; i++) {
@@ -338,13 +338,13 @@ inline void Vector<T>::Inverse()
 
 
 	// Solve equation Ax=b for an upper triangular matrix A
-	for (int i = n - 1; i >= 0; i--) {
+	for (size_t i = n - 1; i >= 0; i--) {
 		for (int k = 0; k<n; k++) {
 			B[i][k] /= this->v[i][i];
 		}
 
 
-		for (int rowModify = i - 1; rowModify >= 0; rowModify--) {
+		for (size_t rowModify = i - 1; rowModify >= 0; rowModify--) {
 			for (int columModify = 0; columModify<n; columModify++) {
 				B[rowModify][columModify] -= B[i][columModify]
 					* this->v[rowModify][i];
